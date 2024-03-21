@@ -61,11 +61,10 @@ func (g *Git) format(msg CommitMsg) string {
 	if len(msg.Scope) != 0 {
 		builder.WriteString("<" + msg.Scope + ">")
 	}
-	builder.WriteString(": " + msg.Summary + " " + msg.Icon)
+	builder.WriteString(": " + msg.Summary + " " + msg.Icon + msg.Icon)
 	if len(msg.Body) != 0 {
 		builder.WriteString("\n\n" + msg.Body)
 	}
-	builder.WriteString("[" + msg.Type + "]")
 	return builder.String()
 }
 
