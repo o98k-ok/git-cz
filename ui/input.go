@@ -18,12 +18,12 @@ type inputModel struct {
 	inputs     []textinput.Model
 }
 
-type InputItem struct {
+type inputItem struct {
 	Name  string
 	Limit int
 }
 
-func NewInputModel(items []InputItem) inputModel {
+func NewInputModel(items []inputItem) inputModel {
 	m := inputModel{
 		inputs: make([]textinput.Model, 0, len(items)),
 	}
@@ -31,6 +31,7 @@ func NewInputModel(items []InputItem) inputModel {
 	for _, item := range items {
 		t := textinput.New()
 
+		t.Cursor.Style = focusedStyle.Copy()
 		t.CharLimit = item.Limit
 		t.Prompt = item.Name
 		m.inputs = append(m.inputs, t)
@@ -49,7 +50,8 @@ func (m inputModel) GetResult() []string {
 func (m inputModel) Init() tea.Cmd {
 	m.inputs[m.focusIndex].PromptStyle = focusedStyle
 	m.inputs[m.focusIndex].TextStyle = focusedStyle
-	return m.inputs[m.focusIndex].Focus()
+	m.inputs[m.focusIndex].Focus()
+	return textinput.Blink
 }
 
 func (m inputModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
@@ -73,10 +75,10 @@ func (m inputModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				m.focusIndex++
 			}
 
-			if m.focusIndex > len(m.inputs) {
+			if m.focusIndex > len(m.inputs)-1 {
 				m.focusIndex = 0
 			} else if m.focusIndex < 0 {
-				m.focusIndex = len(m.inputs)
+				m.focusIndex = len(m.inputs) - 1
 			}
 
 			cmds := make([]tea.Cmd, len(m.inputs))
@@ -102,8 +104,6 @@ func (m inputModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 func (m *inputModel) updateInputs(msg tea.Msg) tea.Cmd {
 	cmds := make([]tea.Cmd, len(m.inputs))
 
-	// Only text inputs with Focus() set will respond, so it's safe to simply
-	// update all of them here without any further logic.
 	for i := range m.inputs {
 		m.inputs[i], cmds[i] = m.inputs[i].Update(msg)
 	}
@@ -115,12 +115,8 @@ func (m inputModel) View() string {
 	var b strings.Builder
 
 	for i := range m.inputs {
-		b.WriteString(m.inputs[i].View())
-		if i < len(m.inputs)-1 {
-			b.WriteRune('\n')
-		}
+		b.WriteString(m.inputs[i].View() + "\n\n")
 	}
 
-	b.WriteString("\n")
 	return b.String()
 }

@@ -6,37 +6,37 @@ import (
 	"github.com/charmbracelet/lipgloss"
 )
 
-type Item struct {
-	TitleInfo, Desc string
+type selectItem struct {
+	TitleInfo, Desc, Icon string
 }
 
-func (i Item) Title() string       { return i.TitleInfo }
-func (i Item) Description() string { return i.Desc }
-func (i Item) FilterValue() string { return i.TitleInfo }
+func (i selectItem) Title() string       { return i.TitleInfo }
+func (i selectItem) Description() string { return i.Desc }
+func (i selectItem) FilterValue() string { return i.TitleInfo + " " + i.Icon }
 
-type model struct {
+type selectModel struct {
 	list list.Model
 }
 
-func NewSelect(items []list.Item) *model {
+func NewSelect(items []list.Item) selectModel {
 	l := list.New(items, list.NewDefaultDelegate(), 50, 20)
 	l.Title = "Commit Type:"
 	l.SetShowStatusBar(false)
 	l.SetShowHelp(false)
-	return &model{
+	return selectModel{
 		list: l,
 	}
 }
 
-func (m model) Init() tea.Cmd {
+func (m selectModel) Init() tea.Cmd {
 	return nil
 }
 
-func (m model) GetResult() string {
+func (m selectModel) GetResult() string {
 	return m.list.SelectedItem().FilterValue()
 }
 
-func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+func (m selectModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
 	case tea.KeyMsg:
 		if msg.String() == "ctrl+c" {
@@ -52,6 +52,6 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	return m, cmd
 }
 
-func (m model) View() string {
+func (m selectModel) View() string {
 	return lipgloss.NewStyle().Render(m.list.View())
 }

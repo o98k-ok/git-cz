@@ -1,33 +1,30 @@
 package main
 
-import "github.com/o98k-ok/git-cz/git"
+import (
+	"strings"
+
+	tea "github.com/charmbracelet/bubbletea"
+	"github.com/o98k-ok/git-cz/config"
+	"github.com/o98k-ok/git-cz/git"
+	"github.com/o98k-ok/git-cz/ui"
+)
 
 func main() {
-	// model := ui.NewSelect([]list.Item{
-	// 	ui.Item{TitleInfo: "xx", Desc: "xx is xx"},
-	// 	ui.Item{TitleInfo: "yy", Desc: "yy is yy"},
-	// 	ui.Item{TitleInfo: "zz", Desc: "zz is zz"},
-	// })
-	// tea.NewProgram(model, tea.WithAltScreen()).Run()
-
-	// fmt.Println(model.GetResult())
-
-	// items := []ui.InputItem{
-	// 	{Name: "Scope", Limit: 20},
-	// 	{Name: "Summary", Limit: 100},
-	// 	{Name: "Body", Limit: 200},
-	// }
-
-	// m := ui.NewInputModel(items)
-	// tea.NewProgram(m).Run()
-	// fmt.Println(m.GetResult())
+	cfg := config.NewConfigWith("./config/config.json")
+	cmt := ui.NewCommitModel(cfg)
+	tea.NewProgram(cmt).Run()
 
 	flow := git.NewFlow()
-	flow.CreateBranchWithCommit(git.BranchMsg{Type: "feature", Branch: "test_it"}, git.CommitMsg{
-		Type:    "feature",
-		Icon:    "okk",
-		Scope:   "lucci",
-		Summary: "test it",
-		Body:    "test it ok",
-	})
+	types := cmt.GetResult(ui.SelectMode).(string)
+	typeInfo := strings.Split(types, " ")
+	msg := cmt.GetResult(ui.InputMode).([]string)
+
+	// branchMsg := git.BranchMsg{Type: typeInfo[0], Branch: msg[1]}
+	gitMsg := git.CommitMsg{
+		Type:    typeInfo[0],
+		Icon:    typeInfo[1],
+		Scope:   msg[0],
+		Summary: msg[1],
+	}
+	flow.Commit(gitMsg)
 }
