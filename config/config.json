@@ -1,0 +1,42 @@
+{
+    "types":[
+        {
+            "name": "feature",
+            "icon": "✨",
+            "desc": "New feature ✨✨"
+        },
+        {
+            "name": "init",
+            "icon": "🎉",
+            "desc": "Initial commit 🎉🎉"
+        },
+        {
+            "name": "bugfix",
+            "icon": "🐛",
+            "desc": "Bugfix 🐛🐛"
+        },
+        {
+            "name": "perf",
+            "icon": "🐎",
+            "desc": "Performance 🐎🐎"
+        },
+        {
+            "name": "refactor",
+            "icon": "🔨",
+            "desc": "Refactor code 🔨🔨"
+        },
+        {
+            "name": "doc",
+            "icon": "📚",
+            "desc": "Documentation 📚"
+        }
+    ],
+    "scope": {
+        "name": " Scope: ",
+        "size": 100
+    },
+    "summary": {
+        "name": "Summary: ",
+        "size": 100
+    }
+}
