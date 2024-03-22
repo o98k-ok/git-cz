@@ -10,7 +10,7 @@ import (
 )
 
 func main() {
-	cfg := config.NewConfigWith("./config/config.json")
+	cfg := config.NewConfigWith("/Users/shadow/Documents/code/git-cz/config/config.json")
 	cmt := ui.NewCommitModel(cfg)
 	tea.NewProgram(cmt).Run()
 
